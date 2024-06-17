@@ -14,11 +14,12 @@ import com.example.assignment.ui.UpdateUserActivity
 import com.google.firebase.database.core.Context
 import com.google.firebase.database.core.view.View
 import com.squareup.picasso.Picasso
+import java.lang.Exception
 import javax.security.auth.callback.Callback
 
-class UserAdapter(var context: Context,var data:ArrayList<UserModel>): RecyclerView.Adapter<UserAdapter.UserViewHolder> (){
-    class UserViewHolder(view:View) : RecyclerView.ViewHolder(view){
-        var email:TextView = view.findViewById(R.id.LabelEmail)
+class UserAdapter(var context: android.content.Context,var data:ArrayList<UserModel>): RecyclerView.Adapter<UserAdapter.UserViewHolder> (){
+    class UserViewHolder(view:android.view.View) : RecyclerView.ViewHolder(view){
+        var email:TextView = view.findViewById(R.id.labelEmail)
         var number: TextView = view.findViewById(R.id.labelNumber)
         var password: TextView = view.findViewById(R.id.labelPassword)
         var btnEdit : TextView = view.findViewById(R.id.btnEdit)
@@ -29,7 +30,7 @@ class UserAdapter(var context: Context,var data:ArrayList<UserModel>): RecyclerV
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         var view = LayoutInflater.from(parent.context).inflate(R.layout.sample_login,parent,false)
-        return  UserViewHolder(View)
+        return  UserViewHolder(view)
     }
 
     override fun getItemCount(): Int {
@@ -43,19 +44,21 @@ class UserAdapter(var context: Context,var data:ArrayList<UserModel>): RecyclerV
 
         var image = data[position].url
 
-       Picasso.get().load(image).into(holder.image, object : Callback{
-            override fun onSuccess() {
-                holder.progressBar.visibility = View.INVISIBLE
-            }
+       Picasso.get().load(image).into(holder.image, object : com.squareup.picasso.Callback{
+           override fun onSuccess() {
+               holder.progressBar.visibility = android.view.View.INVISIBLE
+           }
 
-            override fun onError(e: Exception?) {
-                Toast.makeText(context,e?.localizedMessage,Toast.LENGTH_LONG).show()
-            }
-        })
+           override fun onError(e: Exception?) {
+               Toast.makeText(context,e?.localizedMessage,Toast.LENGTH_LONG).show()
+           }
+       })
+
+
         holder.btnEdit.setOnClickListener {
             var intent = Intent(context, UpdateUserActivity::class.java)
             intent.putExtra("user",data[position])
-            context.StartActivity(intent)
+            context.startActivity(intent)
         }
     }
     fun getUserId(position: Int): String{

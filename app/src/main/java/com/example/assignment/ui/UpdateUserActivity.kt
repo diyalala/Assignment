@@ -79,7 +79,7 @@ class UpdateUserActivity :AppCompatActivity() {
             uploadImage()
         }
         updateUserBinding.imageupdate.setOnClickListener {
-            imageUtils.launchGallery(this@UpdateUserActivity)
+            imageUtils.launchGallery(this)
 
         }
 

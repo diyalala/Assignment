@@ -32,13 +32,13 @@ class ImageUtils (var activity: AppCompatActivity) {
             })
     }
 
-    fun launchGallery(context:Context){
+    fun launchGallery(context : android.content.Context){
         var permissions = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
             android.Manifest.permission.READ_MEDIA_IMAGES
         }else{
             android.Manifest.permission.READ_EXTERNAL_STORAGE
         }
-        if (ContextCompat.checkSelfPermission(Context,permissions) != PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(context,permissions) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(activity, arrayOf(permissions),1)
         }else{
             val intent = Intent()

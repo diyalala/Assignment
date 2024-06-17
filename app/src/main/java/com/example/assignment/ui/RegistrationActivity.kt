@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.assignment.Model.UserModel
+import com.example.assignment.Repository.UserRepositoryImpl
 import com.example.assignment.Utils.ImageUtils
 import com.example.assignment.ViewModel.UserViewModel
 import com.example.assignment.databinding.ActivityRegistrationBinding
@@ -26,26 +27,11 @@ class RegistrationActivity :AppCompatActivity() {
     var ref = firebaseDatabase.reference.child("user")
 
 
-    lateinit var activityResultLauncher :ActivityResultLauncher<Intent>
     var imageUri : Uri? = null
 
     lateinit var imageUtils: ImageUtils
 
     lateinit var userViewmodel: UserViewModel
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if(requestCode == 1 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            val intent = Intent()
-            intent.type = "image/*"
-            intent.action = Intent.ACTION_GET_CONTENT
-            activityResultLauncher.launch(intent)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +40,8 @@ class RegistrationActivity :AppCompatActivity() {
         registrationBinding = ActivityRegistrationBinding.inflate(layoutInflater)
         setContentView(registrationBinding.root)
 
+        val repo = UserRepositoryImpl()
+        userViewmodel = UserViewModel(repo)
         imageUtils = ImageUtils(this@RegistrationActivity)
         imageUtils.registerActivity { url ->
             url.let {
@@ -75,12 +63,7 @@ class RegistrationActivity :AppCompatActivity() {
         }
 
         registrationBinding.buttonregister2.setOnClickListener {
-            var name : String = registrationBinding.editname.text.toString()
-            var email : String = registrationBinding.editemail.text.toString()
-            var number : Int = registrationBinding.editNumber.text.toString().toInt()
-            var password : String = registrationBinding.editPassword.text.toString()
-
-            Toast.makeText(applicationContext, "Registration Success", Toast.LENGTH_LONG).show()
+           uploadImage()
         }
     }
     fun uploadImage(){
@@ -102,6 +85,16 @@ class RegistrationActivity :AppCompatActivity() {
         var password : String = registrationBinding.editPassword.text.toString()
         var data =UserModel("",name,email,number,password,url,imageName)
 
+
+        userViewmodel.addUser(data){
+            success,message ->
+            if(success){
+                Toast.makeText(applicationContext,message,Toast.LENGTH_SHORT).show()
+
+            }else{
+                Toast.makeText(applicationContext,message,Toast.LENGTH_SHORT).show()
+            }
+        }
 
     }
 }
